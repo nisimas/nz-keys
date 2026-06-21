@@ -188,13 +188,12 @@ h1 {
 </div>
 
 <script>
-// НАСТРОЙКИ
+// НАСТРОЙКИ - ТВОИ LINKVERTISE ССЫЛКИ
 const FIREBASE_URL = "https://nz-keys-default-rtdb.firebaseio.com";
-const LINKVERTISE_STEP1 = "https://google.com"; // потом заменим
-const LINKVERTISE_STEP2 = "https://google.com"; // потом заменим
-const LINKVERTISE_STEP3 = "https://google.com"; // потом заменим
+const LINKVERTISE_STEP1 = "https://link-center.net/6768376/3HCYVW6IyZJr";
+const LINKVERTISE_STEP2 = "https://link-center.net/6768376/WHwshFhbOkug";
+const LINKVERTISE_STEP3 = "https://link-hub.net/6768376/9UNCQ26rtES9";
 
-// Получаем шаг из URL
 const params = new URLSearchParams(window.location.search);
 const step = params.get('step') || '1';
 
@@ -255,7 +254,7 @@ function generateRandomKey() {
 
 async function generateKey() {
     const key = generateRandomKey();
-    const expires = Math.floor(Date.now() / 1000) + 86400; // +24 часа
+    const expires = Math.floor(Date.now() / 1000) + 86400;
     
     try {
         await fetch(`${FIREBASE_URL}/keys/${key}.json`, {
