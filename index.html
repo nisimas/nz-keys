@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nz Key System</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body {
+    background: radial-gradient(circle at top, #1a0d2e 0%, #08080f 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #fff;
+    overflow-x: hidden;
+}
+.container {
+    background: linear-gradient(135deg, rgba(22,22,40,0.95), rgba(12,12,20,0.95));
+    border: 1px solid rgba(130, 100, 255, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(130, 100, 255, 0.2);
+    backdrop-filter: blur(20px);
+    animation: fadeIn 0.6s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.logo {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, #8264ff, #a587ff);
+    border-radius: 14px;
+    margin: 0 auto 20px;
+    transform: rotate(-20deg);
+    box-shadow: 0 10px 30px rgba(130, 100, 255, 0.5);
+}
+h1 {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #fff, #a587ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.subtitle {
+    text-align: center;
+    color: #8a8aaa;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+.progress-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8264ff, #a587ff);
+    border-radius: 4px;
+    transition: width 0.8s ease;
+    box-shadow: 0 0 20px rgba(130, 100, 255, 0.5);
+}
+.checkpoints {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    gap: 10px;
+}
+.checkpoint {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px 10px;
+    text-align: center;
+    transition: all 0.3s;
+}
+.checkpoint.active {
+    background: rgba(130, 100, 255, 0.15);
+    border-color: #8264ff;
+    box-shadow: 0 0 20px rgba(130, 100, 255, 0.3);
+}
+.checkpoint.done {
+    background: rgba(80, 255, 140, 0.1);
+    border-color: #50ff8c;
+}
+.checkpoint-num {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.checkpoint-label {
+    font-size: 11px;
+    color: #8a8aaa;
+    text-transform: uppercase;
+}
+.checkpoint.done .checkpoint-num::before { content: "✓ "; color: #50ff8c; }
+.btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #8264ff, #a587ff);
+    color: white;
+    box-shadow: 0 8px 20px rgba(130, 100, 255, 0.4);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(130, 100, 255, 0.6);
+}
+.key-box {
+    background: rgba(130, 100, 255, 0.1);
+    border: 2px dashed #8264ff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #fff;
+    cursor: pointer;
+    word-break: break-all;
+}
+.key-box:hover { background: rgba(130, 100, 255, 0.2); }
+.info {
+    text-align: center;
+    color: #8a8aaa;
+    font-size: 12px;
+    margin-top: 20px;
+    line-height: 1.6;
+}
+.hidden { display: none; }
+.loader {
+    width: 40px; height: 40px;
+    border: 3px solid rgba(130, 100, 255, 0.2);
+    border-top-color: #8264ff;
+    border-radius: 50%;
+    margin: 20px auto;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="logo"></div>
+    <h1>Nz Key System</h1>
+    <p class="subtitle">Пройди 3 чекпоинта чтобы получить ключ</p>
+    
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress" style="width: 0%"></div>
+    </div>
+    
+    <div class="checkpoints">
+        <div class="checkpoint" id="cp1">
+            <div class="checkpoint-num">1</div>
+            <div class="checkpoint-label">Step 1</div>
+        </div>
+        <div class="checkpoint" id="cp2">
+            <div class="checkpoint-num">2</div>
+            <div class="checkpoint-label">Step 2</div>
+        </div>
+        <div class="checkpoint" id="cp3">
+            <div class="checkpoint-num">3</div>
+            <div class="checkpoint-label">Step 3</div>
+        </div>
+    </div>
+    
+    <div id="content"></div>
+    
+    <p class="info">Ключ действует 24 часа. Привязан к одному ПК.<br>Новый ключ нужно получать каждый день.</p>
+</div>
+
+<script>
+// НАСТРОЙКИ
+const FIREBASE_URL = "https://nz-keys-default-rtdb.firebaseio.com";
+const LINKVERTISE_STEP1 = "https://google.com"; // потом заменим
+const LINKVERTISE_STEP2 = "https://google.com"; // потом заменим
+const LINKVERTISE_STEP3 = "https://google.com"; // потом заменим
+
+// Получаем шаг из URL
+const params = new URLSearchParams(window.location.search);
+const step = params.get('step') || '1';
+
+const cp1 = document.getElementById('cp1');
+const cp2 = document.getElementById('cp2');
+const cp3 = document.getElementById('cp3');
+const progress = document.getElementById('progress');
+const content = document.getElementById('content');
+
+function setStep(s) {
+    if (s == '1') {
+        progress.style.width = '0%';
+        cp1.classList.add('active');
+        content.innerHTML = `
+            <button class="btn btn-primary" onclick="window.location.href='${LINKVERTISE_STEP1}'">
+                Пройти чекпоинт 1
+            </button>
+        `;
+    } else if (s == '2') {
+        progress.style.width = '33%';
+        cp1.classList.add('done');
+        cp2.classList.add('active');
+        content.innerHTML = `
+            <button class="btn btn-primary" onclick="window.location.href='${LINKVERTISE_STEP2}'">
+                Пройти чекпоинт 2
+            </button>
+        `;
+    } else if (s == '3') {
+        progress.style.width = '66%';
+        cp1.classList.add('done');
+        cp2.classList.add('done');
+        cp3.classList.add('active');
+        content.innerHTML = `
+            <button class="btn btn-primary" onclick="window.location.href='${LINKVERTISE_STEP3}'">
+                Пройти чекпоинт 3
+            </button>
+        `;
+    } else if (s == 'generate') {
+        progress.style.width = '100%';
+        cp1.classList.add('done');
+        cp2.classList.add('done');
+        cp3.classList.add('done');
+        content.innerHTML = '<div class="loader"></div><p style="text-align:center;color:#8a8aaa;">Генерируем твой ключ...</p>';
+        generateKey();
+    }
+}
+
+function generateRandomKey() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let key = 'NZ-';
+    for (let i = 0; i < 4; i++) key += chars[Math.floor(Math.random() * chars.length)];
+    key += '-';
+    for (let i = 0; i < 4; i++) key += chars[Math.floor(Math.random() * chars.length)];
+    key += '-';
+    for (let i = 0; i < 4; i++) key += chars[Math.floor(Math.random() * chars.length)];
+    return key;
+}
+
+async function generateKey() {
+    const key = generateRandomKey();
+    const expires = Math.floor(Date.now() / 1000) + 86400; // +24 часа
+    
+    try {
+        await fetch(`${FIREBASE_URL}/keys/${key}.json`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                hwid: 'none',
+                expires: expires,
+                created: Math.floor(Date.now() / 1000)
+            })
+        });
+        
+        content.innerHTML = `
+            <p style="text-align:center;color:#50ff8c;margin-bottom:15px;">✓ Ключ создан!</p>
+            <div class="key-box" onclick="copyKey('${key}')">${key}</div>
+            <p style="text-align:center;color:#8a8aaa;font-size:12px;">Нажми на ключ чтобы скопировать</p>
+        `;
+    } catch (e) {
+        content.innerHTML = `<p style="text-align:center;color:#ff5050;">Ошибка генерации. Попробуй ещё раз.</p>`;
+    }
+}
+
+function copyKey(key) {
+    navigator.clipboard.writeText(key);
+    alert('Ключ скопирован!');
+}
+
+setStep(step);
+</script>
+</body>
+</html>
