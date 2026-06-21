@@ -1,9 +1,7 @@
 --// ═══════════════════════════════════════════
---// Nz Script - Loader v1.0
---// Key System + GUI + Functions
+--// Nz Script - Loader v1.1 (FIXED)
 --// ═══════════════════════════════════════════
 
---// НАСТРОЙКИ
 local KEY_CONFIG = {
     FIREBASE_URL = "https://nz-keys-default-rtdb.firebaseio.com",
     LINKVERTISE_URL = "https://link-center.net/6768376/3HCYVW6IyZJr",
@@ -11,14 +9,12 @@ local KEY_CONFIG = {
     VERSION = "v1.0"
 }
 
---// СЕРВИСЫ
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 
---// HWID
 local HWID = ""
 pcall(function()
     HWID = game:GetService("RbxAnalyticsService"):GetClientId()
@@ -27,7 +23,6 @@ if HWID == "" then
     HWID = tostring(Player.UserId) .. "_" .. tostring(game.PlaceId)
 end
 
---// Очистка старых GUI
 if game.CoreGui:FindFirstChild("NzKeySystem") then 
     game.CoreGui:FindFirstChild("NzKeySystem"):Destroy() 
 end
@@ -36,8 +31,23 @@ if game.CoreGui:FindFirstChild("NzGUI") then
 end
 
 --// ═══════════════════════════════════════════
---// СЕКЦИЯ 1: ПРОВЕРКА КЛЮЧА
+--// СЕКЦИЯ 1: ФУНКЦИИ (ОБЪЯВЛЯЕМ В НАЧАЛЕ!)
 --// ═══════════════════════════════════════════
+
+local function loadNzGUI()
+    print("[Nz] GUI загружается...")
+    -- Сюда вставим твой GUI код позже
+end
+
+local function loadJailbreakFunctions()
+    print("[Nz] Функции Jailbreak загружены!")
+    -- Сюда вставим функции Jailbreak позже
+end
+
+local function StartMainScript()
+    loadNzGUI()
+    loadJailbreakFunctions()
+end
 
 local function CheckKey(key)
     local success, result = pcall(function()
@@ -117,14 +127,6 @@ keyStroke.Thickness = 1.5
 keyStroke.Transparency = 0.4
 keyStroke.Parent = KeyFrame
 
-local keyGrad = Instance.new("UIGradient")
-keyGrad.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(16, 16, 28)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(8, 8, 14))
-}
-keyGrad.Rotation = 180
-keyGrad.Parent = KeyFrame
-
 local LogoIcon = Instance.new("Frame")
 LogoIcon.BackgroundColor3 = Color3.fromRGB(130, 100, 255)
 LogoIcon.Position = UDim2.new(0.5, 0, 0, 35)
@@ -134,14 +136,6 @@ LogoIcon.Rotation = -20
 LogoIcon.ZIndex = 102
 LogoIcon.Parent = KeyFrame
 Instance.new("UICorner", LogoIcon).CornerRadius = UDim.new(0, 10)
-
-local logoGrad = Instance.new("UIGradient")
-logoGrad.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(130, 100, 255)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(165, 135, 255))
-}
-logoGrad.Rotation = 45
-logoGrad.Parent = LogoIcon
 
 local TitleLabel = Instance.new("TextLabel")
 TitleLabel.BackgroundTransparency = 1
@@ -166,16 +160,6 @@ SubLabel.TextColor3 = Color3.fromRGB(140, 140, 170)
 SubLabel.TextSize = 13
 SubLabel.ZIndex = 102
 SubLabel.Parent = KeyFrame
-
-local Divider = Instance.new("Frame")
-Divider.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-Divider.BackgroundTransparency = 0.3
-Divider.BorderSizePixel = 0
-Divider.Position = UDim2.new(0.5, 0, 0, 148)
-Divider.AnchorPoint = Vector2.new(0.5, 0)
-Divider.Size = UDim2.new(0.8, 0, 0, 1)
-Divider.ZIndex = 102
-Divider.Parent = KeyFrame
 
 local InputFrame = Instance.new("Frame")
 InputFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 30)
@@ -235,21 +219,6 @@ CheckButton.AutoButtonColor = false
 CheckButton.Parent = KeyFrame
 Instance.new("UICorner", CheckButton).CornerRadius = UDim.new(0, 8)
 
-local checkGrad = Instance.new("UIGradient")
-checkGrad.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(130, 100, 255)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(165, 135, 255))
-}
-checkGrad.Rotation = 45
-checkGrad.Parent = CheckButton
-
-CheckButton.MouseEnter:Connect(function()
-    TweenService:Create(CheckButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(150, 120, 255)}):Play()
-end)
-CheckButton.MouseLeave:Connect(function()
-    TweenService:Create(CheckButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(130, 100, 255)}):Play()
-end)
-
 local GetKeyButton = Instance.new("TextButton")
 GetKeyButton.BackgroundColor3 = Color3.fromRGB(22, 22, 36)
 GetKeyButton.BorderSizePixel = 0
@@ -271,13 +240,6 @@ getKeyStroke.Thickness = 1.5
 getKeyStroke.Transparency = 0.4
 getKeyStroke.Parent = GetKeyButton
 
-GetKeyButton.MouseEnter:Connect(function()
-    TweenService:Create(GetKeyButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 48)}):Play()
-end)
-GetKeyButton.MouseLeave:Connect(function()
-    TweenService:Create(GetKeyButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(22, 22, 36)}):Play()
-end)
-
 local HWIDLabel = Instance.new("TextLabel")
 HWIDLabel.BackgroundTransparency = 1
 HWIDLabel.Position = UDim2.new(0.5, 0, 0, 352)
@@ -290,21 +252,82 @@ HWIDLabel.TextSize = 10
 HWIDLabel.ZIndex = 102
 HWIDLabel.Parent = KeyFrame
 
-local hwidBtn = Instance.new("TextButton")
-hwidBtn.BackgroundTransparency = 1
-hwidBtn.Position = HWIDLabel.Position
-hwidBtn.AnchorPoint = HWIDLabel.AnchorPoint
-hwidBtn.Size = HWIDLabel.Size
-hwidBtn.Text = ""
-hwidBtn.ZIndex = 103
-hwidBtn.Parent = KeyFrame
-hwidBtn.MouseButton1Click:Connect(function()
-    pcall(function() setclipboard(HWID) end)
-    HWIDLabel.Text = "HWID скопирован!"
-    task.wait(1.5)
-    HWIDLabel.Text = "HWID: " .. HWID:sub(1, 20) .. "..."
-end)
-
 TweenService:Create(KeyFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back), {
     Size = UDim2.new(0, 380, 0, 390)
 }):Play()
+
+--// ═══════════════════════════════════════════
+--// СЕКЦИЯ 3: ОБРАБОТЧИКИ КНОПОК
+--// ═══════════════════════════════════════════
+
+GetKeyButton.MouseButton1Click:Connect(function()
+    print("[Nz] Кнопка 'Получить ключ' нажата")
+    local copied = false
+    pcall(function() 
+        setclipboard(KEY_CONFIG.LINKVERTISE_URL)
+        copied = true
+    end)
+    
+    if copied then
+        StatusLabel.TextColor3 = Color3.fromRGB(130, 100, 255)
+        StatusLabel.Text = "Ссылка скопирована! Вставь в браузер."
+    else
+        StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+        StatusLabel.Text = "Не удалось скопировать. Перейди вручную."
+    end
+end)
+
+local isChecking = false
+CheckButton.MouseButton1Click:Connect(function()
+    print("[Nz] Кнопка 'Проверить' нажата")
+    if isChecking then return end
+    
+    local key = KeyInput.Text:gsub("%s+", "")
+    print("[Nz] Введённый ключ:", key)
+    
+    if key == "" then
+        StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+        StatusLabel.Text = "Введи ключ!"
+        return
+    end
+    
+    isChecking = true
+    CheckButton.Text = "ПРОВЕРЯЮ..."
+    StatusLabel.Text = ""
+    
+    task.wait(0.3)
+    
+    local valid, message = CheckKey(key)
+    print("[Nz] Результат проверки:", valid, message)
+    
+    if valid then
+        StatusLabel.TextColor3 = Color3.fromRGB(80, 255, 140)
+        StatusLabel.Text = message
+        
+        TweenService:Create(keyStroke, TweenInfo.new(0.3), {Color = Color3.fromRGB(80, 255, 140)}):Play()
+        
+        task.wait(1)
+        
+        TweenService:Create(KeyFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+            Size = UDim2.new(0, 0, 0, 0)
+        }):Play()
+        TweenService:Create(Overlay, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+        
+        task.wait(0.6)
+        KeyGui:Destroy()
+        
+        StartMainScript()
+    else
+        StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+        StatusLabel.Text = message
+        
+        TweenService:Create(inputStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(255, 80, 80)}):Play()
+        task.wait(1)
+        TweenService:Create(inputStroke, TweenInfo.new(0.3), {Color = Color3.fromRGB(50, 50, 80)}):Play()
+        
+        CheckButton.Text = "ПРОВЕРИТЬ КЛЮЧ"
+        isChecking = false
+    end
+end)
+
+print("[Nz Loader] Запущен! Введи ключ.")
