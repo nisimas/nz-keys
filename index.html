@@ -188,7 +188,6 @@ h1 {
 </div>
 
 <script>
-// НАСТРОЙКИ - ТВОИ LINKVERTISE ССЫЛКИ
 const FIREBASE_URL = "https://nz-keys-default-rtdb.firebaseio.com";
 const LINKVERTISE_STEP1 = "https://link-center.net/6768376/3HCYVW6IyZJr";
 const LINKVERTISE_STEP2 = "https://link-center.net/6768376/WHwshFhbOkug";
@@ -252,7 +251,38 @@ function generateRandomKey() {
     return key;
 }
 
+async function cleanExpiredKeys() {
+    try {
+        const response = await fetch(`${FIREBASE_URL}/keys.json`);
+        const data = await response.json();
+        
+        if (!data) return;
+        
+        const now = Math.floor(Date.now() / 1000);
+        const deletePromises = [];
+        let deletedCount = 0;
+        
+        for (const key in data) {
+            if (key.startsWith('OWNER')) continue;
+            
+            if (data[key].expires && data[key].expires < now) {
+                deletePromises.push(
+                    fetch(`${FIREBASE_URL}/keys/${key}.json`, {method: 'DELETE'})
+                );
+                deletedCount++;
+            }
+        }
+        
+        await Promise.all(deletePromises);
+        console.log(`✓ Удалено просроченных ключей: ${deletedCount}`);
+    } catch (e) {
+        console.error('Ошибка очистки:', e);
+    }
+}
+
 async function generateKey() {
+    await cleanExpiredKeys();
+    
     const key = generateRandomKey();
     const expires = Math.floor(Date.now() / 1000) + 86400;
     
