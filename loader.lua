@@ -1030,9 +1030,18 @@ local function CheckKey(key)
     
     if not ok or not data then return false, "Ошибка обработки ключа" end
     
-    if data.expires and tonumber(data.expires) and tonumber(data.expires) < os.time() then
-        return false, "Ключ просрочен!"
-    end
+   if data.expires and tonumber(data.expires) and tonumber(data.expires) < os.time() then
+    pcall(function()
+        local req = http_request or request or (syn and syn.request)
+        if req then
+            req({
+                Url = KEY_CONFIG.FIREBASE_URL .. "/keys/" .. key .. ".json",
+                Method = "DELETE"
+            })
+        end
+    end)
+    return false, "Ключ просрочен!"
+end
     
     if data.hwid and data.hwid ~= "none" and data.hwid ~= HWID then
         return false, "Ключ привязан к другому ПК!"
